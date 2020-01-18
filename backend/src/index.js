@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const routes = require('./routes');
 
 const app = express();
@@ -10,7 +11,8 @@ mongoose.connect('mongodb+srv://romario:T3lesc)pio10@cluster0-gcmbe.mongodb.net/
 });
 
 //use serve para adicionar regras para todos os verbos
-app.use(express.json())
+app.use(cors());
+app.use(express.json());
 //Métodos HTTP: GET, POST, PUT, DELETE
 
 //Tipos de parâmetros:
