@@ -1,5 +1,6 @@
 import React, { useState, useEffect} from 'react';
 import api from './services/api';
+import DevItem from './componentes/DevItem'
 
 import './global.css';
 import './App.css';
@@ -11,6 +12,7 @@ import './Main.css';
 // Estado: Informações mantidas pelo componente (Lembrar Imutabilidade)
 
 function App() {
+  const [ devs, setDevs] = useState([]);
   const [ github_username, setGithubUsername ] = useState('');
   const [ techs, setTechs ] = useState('');
   const [ latitude, setLatitude ] = useState('');
@@ -33,9 +35,19 @@ function App() {
       }
     )
   }, []);
+
+  useEffect(()=>{
+    async function loadDevs() {
+      const response = await api.get('/devs');
+      
+      setDevs(response.data);
+    }
+
+    loadDevs();
+  }, []);
  
   async function handleAddDev(e) {
-    e.prevenDefault();
+    e.preventDefault();
     
     const response = await api.post('/devs', {
       github_username,
@@ -44,7 +56,10 @@ function App() {
       longitude  
     });
 
-    console.log(response.data); 
+    setGithubUsername('');
+    setTechs('');
+
+    setDevs([...devs, response.data]);
   }
 
   return (
@@ -105,53 +120,9 @@ function App() {
        </aside>
        <main>
         <ul>
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars0.githubusercontent.com/u/26503549?s=400&u=149a8ec1292883d1b842c753dbb83e6454621e76&v=4" alt="Romario Vargas"/>
-              <div className="user-info">
-                <strong>Romario Vargas</strong>
-                <span>ReactJS, React Native, Node.js</span>
-              </div>
-            </header>
-            <p>Bibliografia</p>
-            <a href="https://github.com/romario1990">Acessar perfil no github</a>
-          </li>
-
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars0.githubusercontent.com/u/26503549?s=400&u=149a8ec1292883d1b842c753dbb83e6454621e76&v=4" alt="Romario Vargas"/>
-              <div className="user-info">
-                <strong>Romario Vargas</strong>
-                <span>ReactJS, React Native, Node.js</span>
-              </div>
-            </header>
-            <p>Bibliografia</p>
-            <a href="https://github.com/romario1990">Acessar perfil no github</a>
-          </li>
-
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars0.githubusercontent.com/u/26503549?s=400&u=149a8ec1292883d1b842c753dbb83e6454621e76&v=4" alt="Romario Vargas"/>
-              <div className="user-info">
-                <strong>Romario Vargas</strong>
-                <span>ReactJS, React Native, Node.js</span>
-              </div>
-            </header>
-            <p>Bibliografia</p>
-            <a href="https://github.com/romario1990">Acessar perfil no github</a>
-          </li>
-
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars0.githubusercontent.com/u/26503549?s=400&u=149a8ec1292883d1b842c753dbb83e6454621e76&v=4" alt="Romario Vargas"/>
-              <div className="user-info">
-                <strong>Romario Vargas</strong>
-                <span>ReactJS, React Native, Node.js</span>
-              </div>
-            </header>
-            <p>Bibliografia</p>
-            <a href="https://github.com/romario1990">Acessar perfil no github</a>
-          </li>
+          {devs.map(dev =>(
+            <DevItem key={dev._id} dev={dev}/>
+          ))}
         </ul>
        </main>
      </div>
