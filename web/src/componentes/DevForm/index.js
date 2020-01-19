@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './style.css'
 
 
 function DevForm({ onSubmit }) {
@@ -36,7 +37,7 @@ function DevForm({ onSubmit }) {
          
         setGithubUsername('');
         setTechs('');
-      }
+      } 
 
     return (
         <form onSubmit={handleSubmit}>
@@ -90,7 +91,7 @@ function DevForm({ onSubmit }) {
           
           <button type="submit">Salvar</button>
         </form>
-    )
+    );
 }
 
 
