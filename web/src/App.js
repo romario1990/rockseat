@@ -1,19 +1,50 @@
-import React, { useState } from 'react';
-import Header from './Header';
+import React, { useState, useEffect} from 'react';
+import api from './services/api';
+import DevItem from './componentes/DevItem';
+import DevForm from './componentes/DevForm';
 
+import './global.css';
+import './App.css';
+import './Sidebar.css';
+import './Main.css';
 
+// Componente: Bloco isolado de HMTL, CSS e JS. O qual não interfere no restante da aplicação
+// Propriedade: Informações que um componente PAI passa para o componente FILHO
+// Estado: Informações mantidas pelo componente (Lembrar Imutabilidade)
 
 function App() {
-  const [counter, setCounter] = useState(0);
-  function IncrementCounter(){
-    setCounter(counter + 1);
+  const [ devs, setDevs] = useState([]);
+
+  useEffect(()=>{
+    async function loadDevs() {
+      const response = await api.get('/devs');
+      
+      setDevs(response.data);
+    }
+
+    loadDevs();
+  }, []);
+ 
+  async function handleAddDev(data) {
+    const response = await api.post('/devs', data);
+
+    setDevs([...devs, response.data]);
   }
 
   return (
-    <>
-      <h1>Contador: {counter}</h1>
-      <button onClick={IncrementCounter}>Incrementar</button>
-    </>
+     <div id="app">
+       <aside>
+        <strong>Cadastrar</strong>
+        <DevForm onSubmit={handleAddDev} />
+       </aside>
+       <main>
+        <ul>
+          {devs.map(dev =>(
+            <DevItem key={dev._id} dev={dev}/>
+          ))}
+        </ul>
+       </main>
+     </div>
   );
 }
 
